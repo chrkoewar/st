@@ -5,9 +5,12 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
+// static char *font = "mono:pixelsize=12:antialias=true:autohint=true";
 static char *font = "mono:pixelsize=12:antialias=true:autohint=true";
 static char *font2[] = { "NotoColorEmoji:pixelsize=10:antialias=true:autohint=true" };
-static int borderpx = 2;
+static int xborderpx = 10;
+static int yborderpx = 10;
+const int deltapx = 10;
 
 /*
  * What program is execed by st depends of these precedence rules:
@@ -216,7 +219,8 @@ ResourcePref resources[] = {
 		{ "blinktimeout", INTEGER, &blinktimeout },
 		{ "bellvolume",   INTEGER, &bellvolume },
 		{ "tabspaces",    INTEGER, &tabspaces },
-		{ "borderpx",     INTEGER, &borderpx },
+		{ "xborderpx",     INTEGER, &xborderpx },
+		{ "yborderpx",     INTEGER, &yborderpx },
 		{ "cwscale",      FLOAT,   &cwscale },
 		{ "chscale",      FLOAT,   &chscale },
 		{ "alpha",        FLOAT,   &alpha },
@@ -239,8 +243,12 @@ static MouseShortcut mshortcuts[] = {
 };
 
 /* Internal keyboard shortcuts. */
+// #define MODKEY Mod1Mask
+// #define TERMMOD (Mod1Mask|ShiftMask)
+// #define TERMMOD (ControlMask|ShiftMask)
 #define MODKEY Mod1Mask
-#define TERMMOD (Mod1Mask|ShiftMask)
+#define TERMMOD (ControlMask|ShiftMask)
+#define HEAVYMOD (ControlMask|Mod1Mask|ShiftMask)
 
 static char *openurlcmd[] = { "/bin/sh", "-c", "st-urlhandler -o", "externalpipe", NULL };
 static char *copyurlcmd[] = { "/bin/sh", "-c", "st-urlhandler -c", "externalpipe", NULL };
@@ -249,40 +257,33 @@ static char *copyoutput[] = { "/bin/sh", "-c", "st-copyout", "externalpipe", NUL
 static Shortcut shortcuts[] = {
 	/* mask                 keysym          function        argument */
 	{ XK_ANY_MOD,           XK_Break,       sendbreak,      {.i =  0} },
-	{ ControlMask,          XK_Print,       toggleprinter,  {.i =  0} },
-	{ ShiftMask,            XK_Print,       printscreen,    {.i =  0} },
-	{ XK_ANY_MOD,           XK_Print,       printsel,       {.i =  0} },
-	{ TERMMOD,              XK_Prior,       zoom,           {.f = +1} },
-	{ TERMMOD,              XK_Next,        zoom,           {.f = -1} },
-	{ TERMMOD,              XK_Home,        zoomreset,      {.f =  0} },
-	{ TERMMOD,              XK_C,           clipcopy,       {.i =  0} },
-	{ TERMMOD,              XK_V,           clippaste,      {.i =  0} },
-	{ MODKEY,               XK_c,           clipcopy,       {.i =  0} },
-	{ ShiftMask,            XK_Insert,      clippaste,      {.i =  0} },
-	{ MODKEY,               XK_v,           clippaste,      {.i =  0} },
-	{ ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
-	{ TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
-	{ ShiftMask,            XK_Page_Up,     kscrollup,      {.i = -1} },
-	{ ShiftMask,            XK_Page_Down,   kscrolldown,    {.i = -1} },
-	{ MODKEY,               XK_Page_Up,     kscrollup,      {.i = -1} },
-	{ MODKEY,               XK_Page_Down,   kscrolldown,    {.i = -1} },
-	{ MODKEY,               XK_k,           kscrollup,      {.i =  1} },
-	{ MODKEY,               XK_j,           kscrolldown,    {.i =  1} },
-	{ MODKEY,               XK_Up,          kscrollup,      {.i =  1} },
-	{ MODKEY,               XK_Down,        kscrolldown,    {.i =  1} },
-	{ MODKEY,               XK_u,           kscrollup,      {.i = -1} },
-	{ MODKEY,               XK_d,           kscrolldown,    {.i = -1} },
-	{ MODKEY,		XK_s,		changealpha,	{.f = -0.05} },
-	{ MODKEY,		XK_a,		changealpha,	{.f = +0.05} },
-	{ TERMMOD,              XK_Up,          zoom,           {.f = +1} },
-	{ TERMMOD,              XK_Down,        zoom,           {.f = -1} },
-	{ TERMMOD,              XK_K,           zoom,           {.f = +1} },
-	{ TERMMOD,              XK_J,           zoom,           {.f = -1} },
-	{ TERMMOD,              XK_U,           zoom,           {.f = +2} },
-	{ TERMMOD,              XK_D,           zoom,           {.f = -2} },
-	{ MODKEY,               XK_l,           externalpipe,   {.v = openurlcmd } },
-	{ MODKEY,               XK_y,           externalpipe,   {.v = copyurlcmd } },
-	{ MODKEY,               XK_o,           externalpipe,   {.v = copyoutput } },
+	//
+	// { ControlMask,          XK_Print,       toggleprinter,  {.i =  0} },
+	// { ShiftMask,            XK_Print,       printscreen,    {.i =  0} },
+	// { XK_ANY_MOD,           XK_Print,       printsel,       {.i =  0} },
+
+	{ HEAVYMOD,               XK_Up,     kscrollup,      {.i = 1} },
+	{ HEAVYMOD,               XK_Down,    kscrolldown,    {.i = 1} },
+
+	{ HEAVYMOD,             XK_H,         xborder,           {.f = -deltapx} },
+	{ HEAVYMOD,             XK_L,         xborder,           {.f = +deltapx} },
+
+	{ HEAVYMOD,             XK_J,         yborder,           {.f = +deltapx} },
+	{ HEAVYMOD,             XK_K,         yborder,           {.f = -deltapx} },
+
+	{ HEAVYMOD,             XK_M,      zoom,           {.f = -1} },
+	{ HEAVYMOD,             XK_N,   zoom,           {.f = +1} },
+
+	{ HEAVYMOD,				   XK_O,		  changealpha,	{.f = -0.05} },
+	{ HEAVYMOD,				   XK_I,	  changealpha,	{.f = +0.05} },
+
+	{ MODKEY,               XK_c,         clipcopy,       {.i =  0} },
+	{ MODKEY,               XK_v,         clippaste,      {.i =  0} },
+
+	{ HEAVYMOD,             XK_F,         externalpipe,   {.v = openurlcmd } },
+	{ HEAVYMOD,             XK_C,         externalpipe,   {.v = copyurlcmd } },
+
+	{ HEAVYMOD,             XK_O,           externalpipe,   {.v = copyoutput } },
 };
 
 /*

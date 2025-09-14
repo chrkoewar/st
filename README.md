@@ -1,31 +1,24 @@
-# Luke's build of st - the simple (suckless) terminal
+# Luke's build of st - the simple (suckless) terminal - with modifications and customizable margins
 
 The [suckless terminal (st)](https://st.suckless.org/) with some additional
 features that make it literally the best terminal emulator ever:
 
 ## Unique features (using dmenu)
 
-+ **follow urls** by pressing `alt-l`
-+ **copy urls** in the same way with `alt-y`
-+ **copy the output of commands** with `alt-o`
++ `MOD` = Control+Shift-Alt 
++ **follow urls** by pressing `MOD-f`
++ **copy urls** in the same way with `MOD-c`
++ **copy the output of commands** with `MOD-o`
 
-## Bindings for
+## Bindings
 
-+ **scrollback** with `alt-↑/↓` or `alt-pageup/down` or `shift` while scrolling the
-  mouse.
-+ OR **vim-bindings**: scroll up/down in history with `alt-k` and `alt-j`.
++ **scrollback** with `MOD-↑/↓` or `shift` while scrolling the mouse.
   Faster with `alt-u`/`alt-d`.
-+ **zoom/change font size**: same bindings as above, but holding down shift as
-  well. `alt-home` returns to default
-+ **copy text** with `alt-c`, **paste** is `alt-v` or `shift-insert`
-
-## Pretty stuff
-
-+ Compatibility with `Xresources` and `pywal` for dynamic colors.
-+ Default [gruvbox](https://github.com/morhetz/gruvbox) colors otherwise.
-+ Transparency/alpha, which is also adjustable from your `Xresources`.
-+ Default font is system "mono" at 14pt, meaning the font will match your
-  system font.
++ **copy text** with `alt-c`, **paste** is `alt-v` 
++ **change alpha** with `MOD i/o`
++ **change zoom** with `MOD m/n`
++ **set x- and y-margins** at runtime with `-x 50 -y 100` or `-b 50`
++ **set x- and y-margins** via hotkey `MOD h/j/k/l`
 
 ## Other st patches
 
@@ -39,11 +32,10 @@ features that make it literally the best terminal emulator ever:
 You should have xlib header files and libharfbuzz build files installed.
 
 ```
-git clone https://github.com/LukeSmithxyz/st
+git clone https://github.com/chrkoewar/st
 cd st
 sudo make install
 ```
-
 Obviously, `make` is required to build. `fontconfig` is required for the
 default build, since it asks `fontconfig` for your system monospace font. It
 might be obvious, but `libX11` and `libXft` are required as well. Chances are,
@@ -83,7 +75,3 @@ To be clear about the color settings:
 
 Note that when you run `wal`, it will negate the transparency of existing windows, but new windows will continue with the previously defined transparency.
 
-## Contact
-
-- Luke Smith <luke@lukesmith.xyz>
-- [https://lukesmith.xyz](https://lukesmith.xyz)
